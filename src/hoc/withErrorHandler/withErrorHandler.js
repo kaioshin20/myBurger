@@ -4,11 +4,13 @@ import Aux from '../Auxiliary/Auxiliary';
 
 const withErrorHandler = (WrappedComponent, axios) => {
     return class extends Component {
-        state = {
-            error: null
-        }
+        constructor() {
+            super();
+            
+            this.state = {
+                error: null
+            }
 
-        componentDidMount() {
             axios.interceptors.request.use(request => {
                 this.setState({error: null});
                 return request;
@@ -20,6 +22,24 @@ const withErrorHandler = (WrappedComponent, axios) => {
                 this.setState({error: error})
             });
         }
+
+        // state = {
+        //     error: null
+        // }
+
+        //no longer used we use constructor instead as it runs as soon as page loads
+        // componentWillMount() {
+        //     axios.interceptors.request.use(request => {
+        //         this.setState({error: null});
+        //         return request;
+        //     }, error => {
+        //         this.setState({error: error})
+        //     });
+
+        //     axios.interceptors.response.use(response => response, error => {
+        //         this.setState({error: error})
+        //     });
+        // }
 
         errorHandled = () => {
             this.setState({error: null})
