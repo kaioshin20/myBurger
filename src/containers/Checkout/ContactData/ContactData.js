@@ -15,7 +15,12 @@ class ContactData extends Component{
                     type: 'text',
                     placeholder: 'Your name'
                 },
-                value: ''
+                value: '',
+                validation: {
+                    required: true
+                },
+                valid: false,
+                touched: false
             },
             street: {
                 elementType: 'input',
@@ -23,7 +28,12 @@ class ContactData extends Component{
                     type: 'text',
                     placeholder: 'Your street'
                 },
-                value: ''
+                value: '',
+                validation: {
+                    required: true
+                },
+                valid: false,
+                touched: false
             },
             pinCode: {
                 elementType: 'input',
@@ -31,7 +41,13 @@ class ContactData extends Component{
                     type: 'text',
                     placeholder: 'PIN CODE'
                 },
-                value: ''
+                value: '',
+                validation: {
+                    required: true,
+                    length: 6
+                },
+                valid: false,
+                touched: false
             },
             country: {
                 elementType: 'input',
@@ -39,7 +55,12 @@ class ContactData extends Component{
                     type: 'text',
                     placeholder: 'Your country'
                 },
-                value: ''
+                value: '',
+                validation: {
+                    required: true
+                },
+                valid: false,
+                touched: false
             },
             email: {
                 elementType: 'email',
@@ -47,7 +68,12 @@ class ContactData extends Component{
                     type: 'email',
                     placeholder: 'Your e-mail'
                 },
-                value: ''
+                value: '',
+                validation: {
+                    required: true
+                },
+                valid: false,
+                touched: false
             },
             deliveryMethod: {
                 elementType: 'select',
@@ -63,10 +89,23 @@ class ContactData extends Component{
                         }
                     ]
                 },
-                value: 'fastest'
+                value: ''
             }
         },
         loading: false
+    }
+
+    checkValidity(value, rules){
+        let isValid = true;
+
+        if(rules.required){
+            isValid = value.trim() !== ' ' && isValid;
+        }
+        if(rules.length){
+            isValid = value.length === rules.length && isValid;
+        }
+
+        return isValid;
     }
 
     orderHandler = (event) => {
@@ -101,7 +140,10 @@ class ContactData extends Component{
             ...updatedOrderForm[inputIdentifier]
         };
         updatedFormElement.value = event.target.value;
+        updatedFormElement.valid = this.checkValidity(updatedFormElement.value, updatedFormElement.validation);
+        updatedFormElement.touched = true;
         updatedOrderForm[inputIdentifier] = updatedFormElement;
+        console.log(updatedOrderForm);
         this.setState({orderForm: updatedOrderForm});
     }
 
@@ -121,7 +163,10 @@ class ContactData extends Component{
                         key={formElement.id}
                         elementType={formElement.config.elementType}
                         elementConfig={formElement.config.elementConfig}
+                        invalid={!formElement.config.valid}
+                        shouldValidate={formElement.config.validation}
                         changed={(event) => this.inputChangedHandler(event, formElement.id)}
+                        touched={formElement.config.touched}
                         value={formElement.config.value} />
                 ))}
                 <Button btnType="Success">ORDER</Button>
